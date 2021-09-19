@@ -1,0 +1,1 @@
+id	case_control	pos	hosp	km_time	compare	immune_ind	copd_ind	cancer_ind	cardio_ind	kidney_ind	hyper_ind	diabetes_ind	bmi_group	km_time_hosp	age_bin	tested_before	
