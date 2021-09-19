@@ -1,0 +1,75 @@
+from lifelines import CoxPHFitter
+from lifelines import CoxTimeVaryingFitter
+
+
+mat_for_km_tested = pd.read_csv('c:/corona_vaccine/matrix_for_km_and_cox_100_flu_2020.txt', sep="\t")
+
+
+#mat_for_km_tested.head()
+
+#temp_compare = 'mon_12_34'
+
+#mat_for_km_tested.compare.unique()
+
+
+#mat_for_km_tested.columns
+
+
+#mat_for_km_tested = mat_for_km_tested[mat_for_km_tested['compare']=='mon_12_34']
+
+
+cox_list = ['immune_ind','copd_ind','cardio_ind','cancer_ind', 'kidney_ind','hyper_ind', 'diabetes_ind','bmi_group','tested_before'] 
+cox_list
+
+
+
+
+
+final_cox_summary = pd.read_csv('c:/corona_vaccine/cox_summary.txt', sep="\t")
+
+for temp_compare in mat_for_km_tested.compare.unique():
+    print(temp_compare)
+    cph = CoxPHFitter()
+    mat_for_km_temp = mat_for_km_tested[(mat_for_km_tested['compare']==temp_compare)]
+    cph.fit(mat_for_km_temp[['km_time', 'pos','case_control']+cox_list],duration_col='km_time', event_col='pos')
+    orig_summary =  cph.summary.reset_index()
+    orig_summary['compare'] = temp_compare
+    final_cox_summary = final_cox_summary.append(orig_summary)
+	
+	
+	
+final_cox_summary.loc[final_cox_summary['covariate']=='case_control']	
+	
+	
+	
+####### run on age 
+
+
+age_list = mat_for_km_tested.age_bin.unique()
+
+
+final_cox_summary = pd.read_csv('c:/corona_vaccine/cox_summary.txt', sep="\t")
+temp_compare = 'mon_12_34'
+#for temp_age in mat_for_km_tested.age_bin.unique():
+for temp_age in age_list:
+    print(temp_compare,temp_age)
+    cph = CoxPHFitter()
+    mat_for_km_temp = mat_for_km_tested[(mat_for_km_tested['compare']==temp_compare) & (mat_for_km_tested['age_bin']==temp_age) ]
+    cph.fit(mat_for_km_temp[['km_time', 'pos','case_control']+cox_list],duration_col='km_time', event_col='pos')
+    orig_summary =  cph.summary.reset_index()
+    orig_summary['compare'] = temp_age
+    final_cox_summary = final_cox_summary.append(orig_summary)
+	
+	
+	
+	
+
+final_cox_summary.loc[final_cox_summary['covariate']=='case_control']
+
+
+
+
+	
+	
+	
+	

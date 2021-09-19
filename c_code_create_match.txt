@@ -1,0 +1,75 @@
+			map<int, int> match_control_case_ids;
+
+			if (NEW_MATCH == 1) {
+				FILE* fout_match = fopen("booster_match_summary.txt", "w");
+				fprintf(fout_match, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "socio", "city", "age", "gender", "case", "control", "match");
+				for (auto it0 = map_case.begin(); it0 != map_case.end(); it0++) {
+					int sas = it0->first;
+					for (auto it = map_case[sas].begin(); it != map_case[sas].end(); it++) {
+						string city = it->first;
+						//fprintf(stderr, "%s\n", city.c_str());
+						for (auto it1 = map_case[sas][city].begin(); it1 != map_case[sas][city].end(); it1++) {
+							string age_bin = it1->first;
+
+							for (auto it2 = map_case[sas][city][age_bin].begin(); it2 != map_case[sas][city][age_bin].end(); it2++) {
+								int gender = it2->first;
+								vector<int> temp_case = it2->second;
+								fprintf(fout_match, "%s\t%s\t%i\t%i\t", city.c_str(), age_bin.c_str(), gender, (int)temp_case.size());
+								int find_vec_control = 0;
+								if (map_control.find(sas) != map_control.end()) {
+									if (map_control[sas].find(city) != map_control[sas].end()) {
+										if (map_control[sas][city].find(age_bin) != map_control[sas][city].end()) {
+											if (map_control[sas][city][age_bin].find(gender) != map_control[sas][city][age_bin].end()) {
+												find_vec_control = 1;
+												vector<int> temp_control = map_control[sas][city][age_bin][gender];
+												fprintf(fout_match, "%i\t", (int)temp_control.size());
+												int count_find = 0;
+												for (int jj = 0; jj < temp_case.size(); jj++) {
+													if (jj < temp_control.size()) {
+														count_find++;
+														control_match[temp_control[jj]] = 1;
+														case_match[temp_case[jj]] = 1;
+														
+														int id_control = temp_control[jj];
+														int id_case = temp_case[jj];
+														
+														match_control_case_ids[id_control] = id_case;
+													}
+												}
+												fprintf(fout_match, "%i\n", count_find);
+
+											}
+										}
+									}
+								}
+
+								if (find_vec_control == 0) {
+									fprintf(fout_match, "%i\t%i\n", 0, 0);
+								}
+
+
+							}
+						}
+					}
+				}
+				fclose(fout_match);
+
+
+				fprintf(fout_cohort, "control_match_size\t%i\t%s\n", (int)control_match.size(), compare_string.c_str());
+				fprintf(fout_cohort, "case_match_size\t%i\t%s\n", (int)case_match.size(), compare_string.c_str());
+
+				int control_match_cases = 0, case_match_cases = 0;
+				for (auto it = control_match.begin(); it != control_match.end(); it++) {
+					int id = it->first;
+					int pos = 0;
+					if (map_id_pos_in_experiment.find(id) != map_id_pos_in_experiment.end()) pos = 1;
+					control_match_cases += pos;
+				}
+				for (auto it = case_match.begin(); it != case_match.end(); it++) {
+					int id = it->first;
+					int pos = 0;
+					if (map_id_pos_in_experiment.find(id) != map_id_pos_in_experiment.end()) pos = 1;
+					case_match_cases += pos;
+				}
+				fprintf(fout_cohort, "control_cases\t%i\t%s\n", control_match_cases, compare_string.c_str());
+				fprintf(fout_cohort, "case_cases\t%i\t%s\n", case_match_cases, compare_string.c_str());

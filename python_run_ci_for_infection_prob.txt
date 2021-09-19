@@ -1,0 +1,36 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+%matplotlib inline
+%load_ext autoreload
+%autoreload 2
+
+from matplotlib.ticker import FuncFormatter
+
+import matplotlib.ticker as mtick
+import math  
+
+from scipy import stats
+import statsmodels.stats.proportion as smprob
+import statsmodels.stats.contingency_tables
+import statsmodels.api as sm
+import statsmodels.stats.multitest as multi
+
+
+
+N = 10000
+
+
+January = statsmodels.stats.proportion.proportion_confint(1736,475281,method='normal')
+print('January',January[0],January[1],N*January[0],N*January[1] )
+
+February = statsmodels.stats.proportion.proportion_confint(1550,460500,method='normal')
+print('February',February[0],February[1],N*February[0],N*February[1])
+
+March = statsmodels.stats.proportion.proportion_confint(858,371929,method='normal')
+print('March',March[0],March[1],N*March[0],N*March[1])
+
+April = statsmodels.stats.proportion.proportion_confint(76,44734,method='normal')
+print('April',April[0],April[1],N*April[0],N*April[1])

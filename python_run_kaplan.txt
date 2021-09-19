@@ -1,0 +1,51 @@
+
+temp_compare = 'mon_12_34'
+symp_col1='January-February'
+symp_col2='March-April'
+fig_name = temp_compare
+mat_for_km = mat_for_km_tested
+mat_for_km_temp = mat_for_km[mat_for_km['compare']=='mon_12_34']
+mat_for_km_temp_hosp = mat_for_km[mat_for_km['compare']=='mon_12_34']
+ax=None
+
+## Infection
+
+kmf_0 = KaplanMeierFitter()
+kmf_0.fit(mat_for_km_temp.loc[mat_for_km_temp['case_control']==1, 'km_time'], mat_for_km_temp.loc[mat_for_km_temp['case_control']==1, 'pos'], label=f'{symp_col1}')
+
+kmf_1 = KaplanMeierFitter()
+kmf_1.fit(mat_for_km_temp.loc[mat_for_km_temp['case_control']==0, 'km_time'], mat_for_km_temp.loc[mat_for_km_temp['case_control']==0, 'pos'], label=f'{symp_col2}')
+
+
+## Hospitalization
+
+kmf_2 = KaplanMeierFitter()
+kmf_2.fit(mat_for_km_temp.loc[mat_for_km_temp['case_control']==1, 'km_time_hosp'], mat_for_km_temp.loc[mat_for_km_temp['case_control']==1, 'hosp'], label=f'{symp_col1}')
+
+kmf_3 = KaplanMeierFitter()
+kmf_3.fit(mat_for_km_temp.loc[mat_for_km_temp['case_control']==0, 'km_time_hosp'], mat_for_km_temp.loc[mat_for_km_temp['case_control']==0, 'hosp'], label=f'{symp_col2}')
+
+
+ax.set_xticks([0,10,20,30,40,50,60])
+ax.set_xlim(0,60)
+kmf_0.plot_cumulative_density(ax=ax)
+kmf_1.plot_cumulative_density(ax=ax)
+ax.legend(loc='upper left')
+ax.set_title("Infection",fontsize=14)
+ax.set_xlabel("Days",fontsize=14)
+ax.set_ylabel("Comulative \n Incidence (%)",fontsize=14)
+ax.tick_params(axis='x',labelsize=12)
+ax.tick_params(axis='y',labelsize=12)  
+
+
+ax.set_xticks(np.arange(-10,80,10))
+ax.set_xlim(0,75)
+kmf_2.plot_cumulative_density(ax=ax)
+kmf_3.plot_cumulative_density(ax=ax)
+ax.legend(loc='upper left')
+ax.set_title("Hospitalization",fontsize=14)
+#ax.set_title("b",fontsize=16, x=-0.1,weight='bold')
+ax.set_xlabel("Days",fontsize=14)
+#ax[MY_LOCATION].set_ylabel("Comulative \n Incidence (%)",fontsize=14)
+ax.tick_params(axis='x',labelsize=12)
+ax.tick_params(axis='y',labelsize=12)
